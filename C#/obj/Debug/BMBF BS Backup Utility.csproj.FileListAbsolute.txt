@@ -1,0 +1,15 @@
+D:\Visual Studio\BMBF BS Backup Utility\BMBF BS Backup Utility\obj\Debug\BMBF BS Backup Utility.csprojAssemblyReference.cache
+D:\Visual Studio\BMBF BS Backup Utility\BMBF BS Backup Utility\obj\Debug\MainWindow.g.cs
+D:\Visual Studio\BMBF BS Backup Utility\BMBF BS Backup Utility\obj\Debug\App.g.cs
+D:\Visual Studio\BMBF BS Backup Utility\BMBF BS Backup Utility\obj\Debug\BMBF BS Backup Utility_MarkupCompile.cache
+D:\Visual Studio\BMBF BS Backup Utility\BMBF BS Backup Utility\obj\Debug\BMBF BS Backup Utility_MarkupCompile.lref
+D:\Visual Studio\BMBF BS Backup Utility\BMBF BS Backup Utility\bin\Debug\BMBF BS Backup Utility.exe.config
+D:\Visual Studio\BMBF BS Backup Utility\BMBF BS Backup Utility\bin\Debug\BMBF BS Backup Utility.exe
+D:\Visual Studio\BMBF BS Backup Utility\BMBF BS Backup Utility\bin\Debug\BMBF BS Backup Utility.pdb
+D:\Visual Studio\BMBF BS Backup Utility\BMBF BS Backup Utility\obj\Debug\MainWindow.baml
+D:\Visual Studio\BMBF BS Backup Utility\BMBF BS Backup Utility\obj\Debug\BMBF BS Backup Utility.g.resources
+D:\Visual Studio\BMBF BS Backup Utility\BMBF BS Backup Utility\obj\Debug\BMBF_BS_Backup_Utility.Properties.Resources.resources
+D:\Visual Studio\BMBF BS Backup Utility\BMBF BS Backup Utility\obj\Debug\BMBF BS Backup Utility.csproj.GenerateResource.cache
+D:\Visual Studio\BMBF BS Backup Utility\BMBF BS Backup Utility\obj\Debug\BMBF BS Backup Utility.csproj.CoreCompileInputs.cache
+D:\Visual Studio\BMBF BS Backup Utility\BMBF BS Backup Utility\obj\Debug\BMBF BS Backup Utility.exe
+D:\Visual Studio\BMBF BS Backup Utility\BMBF BS Backup Utility\obj\Debug\BMBF BS Backup Utility.pdb
