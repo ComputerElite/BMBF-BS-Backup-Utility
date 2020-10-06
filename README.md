@@ -1,5 +1,5 @@
-# BMBF-BS-Backup-Utility
-Make a full BMBF and Beat Saber Backup
+# BMBF BS Backup Utility
+Make a full BMBF and Beat Saber Backup. It Backes up Scores, Songs, Mods, Playlists and Playlist Covers.
 # How-To
 #### Backup
 Connect your Quest to your PC via a USB Cable and Make Sure BMBF is opened. Then start "BMBF BS Backup Utility.exe" and put in your Quests IP and a Backup Name. Then click "Backup". Wait a few minutes until Everything has finished.
