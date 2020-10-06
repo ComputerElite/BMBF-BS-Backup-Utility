@@ -1,4 +1,4 @@
-# BMBF BS Backup Utility
+# BMBF BS Backup Utility (BBBU)
 Make a full BMBF and Beat Saber Backup. It Backes up Scores, Songs, Mods, Playlists and Playlist Covers.
 # How-To
 #### Backup
