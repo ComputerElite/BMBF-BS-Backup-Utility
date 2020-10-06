@@ -32,7 +32,7 @@ namespace BMBF_BS_Backup_Utility
         int MajorV = 1;
         int MinorV = 0;
         int PatchV = 0;
-        Boolean Preview = true;
+        Boolean Preview = false;
 
         String IP = "";
         Boolean draggable = true;
