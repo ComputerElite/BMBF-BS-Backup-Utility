@@ -8,6 +8,6 @@ Connect your Quest to your PC via a USB Cable and Make Sure BMBF is opened. Then
 # Contributers
 - darkuni (helped me making the Playlist backuping and restoring possible. Check out his nice program: [Playlist Editor Pro](https://beatsaberquest.com/bmbf/my-tools/playlist-editor-pro/#:~:text=Playlist%20Editor%20Pro%20is%20a,details%20and%20download%20it%20here.))
 # Known Issues
-- N/A
+- Microchip Sabers will cause mod Backupping to not work cause they have a "|" in them which can't be used in the Windows file system (not fixable)
 # To-Do
 - N/A
