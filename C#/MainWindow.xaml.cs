@@ -36,6 +36,7 @@ namespace BMBF_BS_Backup_Utility
 
         String IP = "";
         Boolean draggable = true;
+        Boolean running = false;
         String exe = System.Reflection.Assembly.GetEntryAssembly().Location;
         String Songs = "";
         String Playlists = "";
@@ -69,18 +70,34 @@ namespace BMBF_BS_Backup_Utility
             }
             getBackups();
             Update();
+
+            RSongs.IsChecked = true;
+            RPlaylists.IsChecked = true;
+            RScores.IsChecked = true;
+            RMods.IsChecked = true;
+            RReplays.IsChecked = true;
+            RSounds.IsChecked = true;
         }
 
 
         public void Backup(object sender, RoutedEventArgs e)
         {
+            if(running)
+            {
+                return;
+            }
+            running = true;
+
             //Create all Backup Folders
             BackupFSet();
 
             //Scores
+            txtbox.AppendText("\n\nBacking up scores");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat \"" + Scores + "\"");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat \"" + Scores + "\"");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat \"" + Scores + "\"");
+            txtbox.AppendText("\nBacked up scores\n");
+            txtbox.ScrollToEnd();
 
             //Songs
 
@@ -90,14 +107,39 @@ namespace BMBF_BS_Backup_Utility
 
             PlaylistB();
             adb("pull /sdcard/BMBFData/Playlists/ \"" + Playlists + "\"");
+            txtbox.ScrollToEnd();
+
+            //Replays
+
+            txtbox.AppendText("\n\nBacking up replays");
+            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/replays \"" + BackupF + "\"");
+            txtbox.AppendText("\nBacked up replays\n");
+            txtbox.ScrollToEnd();
+
+            //Sounds
+
+            txtbox.AppendText("\n\nBacking up sounds");
+            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/sounds \"" + BackupF + "\"");
+            txtbox.AppendText("\nBacked up sounds\n");
+            txtbox.ScrollToEnd();
 
             //Mods
 
             ModsB();
+
+            txtbox.AppendText("\n\n\nBMBF and Beat Saber Backup has been made.");
+            txtbox.ScrollToEnd();
+            running = false;
         }
 
         public void Restore(object sender, RoutedEventArgs e)
         {
+            if (running)
+            {
+                return;
+            }
+            running = true;
+
             if (Backups.SelectedIndex == 0)
             {
                 txtbox.AppendText("\n\nSelect a valid Backup!");
@@ -107,14 +149,23 @@ namespace BMBF_BS_Backup_Utility
             //Get Backup Folders
             BackupFGet();
 
+            //Check Quest IP
+            Boolean good = CheckIP();
+            if(!good)
+            {
+                txtbox.AppendText("\n\nChoose a valid IP!");
+                return;
+            }
+
             //Scores
             if ((bool)RScores.IsChecked == true)
             {
-                txtbox.AppendText("\nPushing Scores");
+                txtbox.AppendText("\n\nPushing Scores");
                 adb("push \"" + Scores + "\\LocalDailyLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat");
                 adb("push \"" + Scores + "\\LocalLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat");
                 adb("push \"" + Scores + "\\PlayerData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat");
                 txtbox.AppendText("\nPushed Scores");
+                txtbox.ScrollToEnd();
             }
 
             //Playlists
@@ -122,24 +173,76 @@ namespace BMBF_BS_Backup_Utility
             {
                 PlaylistsR();
                 PushPNG(Playlists + "\\Playlists");
+                txtbox.ScrollToEnd();
+            }
+
+            //Replays
+            if ((bool)RReplays.IsChecked)
+            {
+                txtbox.AppendText("\n\nPushing Replays");
+                adb("push \"" + BackupF + "//replays\" /sdcard/Android/data/com.beatgames.beatsaber/files/");
+                txtbox.AppendText("\nFinished Pushing Replays");
+                txtbox.ScrollToEnd();
+            }
+
+            //Sounds
+            if ((bool)RSounds.IsChecked)
+            {
+                txtbox.AppendText("\n\nPushing Sounds");
+                adb("push \"" + BackupF + "//sounds\" /sdcard/Android/data/com.beatgames.beatsaber/files/");
+                txtbox.AppendText("\nFinished Pushing Sounds");
+                txtbox.ScrollToEnd();
             }
 
             //Songs
             if ((bool)RSongs.IsChecked)
             {
-                txtbox.AppendText("\nUploading Songs");
+                txtbox.AppendText("\n\nUploading Songs");
                 Upload(Songs);
                 txtbox.AppendText("\nUploaded Songs");
+                txtbox.ScrollToEnd();
             }
 
             //Mods
             if ((bool)RMods.IsChecked)
             {
-                txtbox.AppendText("\nUploading Mods");
+                txtbox.AppendText("\n\nUploading Mods");
                 Upload(Mods);
                 txtbox.AppendText("\nUploaded Mods");
+                txtbox.ScrollToEnd();
             }
-            
+
+            txtbox.AppendText("\n\n\nBMBF and Beat Saber has been restored with the selected components.");
+            txtbox.ScrollToEnd();
+            running = false;
+        }
+
+        public Boolean CheckIP()
+        {
+            getQuestIP();
+            if(IP == "Quest IP")
+            {
+                return false;
+            }
+            IP.Replace(":50000", "");
+            IP.Replace(":5000", "");
+            IP.Replace(":500", "");
+            IP.Replace(":500", "");
+            IP.Replace(":50", "");
+            IP.Replace(":5", "");
+            int count = 0;
+            for(int i = 0; i < IP.Length; i++)
+            {
+                if(IP.Substring(i, 1) == ".")
+                {
+                    count++;
+                }
+            }
+            if(count != 3)
+            {
+                return false;
+            }
+            return true;
         }
 
         public void PushPNG(String Path)
@@ -164,6 +267,7 @@ namespace BMBF_BS_Backup_Utility
             try
             {
                 getQuestIP();
+                
 
                 String PlaylistsX;
 
@@ -244,6 +348,15 @@ namespace BMBF_BS_Backup_Utility
                 client.UploadValues("http://" + IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
             }
         }
+        public void Sync()
+        {
+            System.Threading.Thread.Sleep(2000);
+            using (WebClient client = new WebClient())
+            {
+                client.QueryString.Add("foo", "foo");
+                client.UploadValues("http://" + IP + ":50000/host/beatsaber/commitconfig", "POST", client.QueryString);
+            }
+        }
 
         public void Upload(String Path)
         {
@@ -251,15 +364,23 @@ namespace BMBF_BS_Backup_Utility
             String[] directories = Directory.GetFiles(Path);
 
 
-
             for (int i = 0; i < directories.Length; i++)
             {
                 WebClient client = new WebClient();
-                
-                txtbox.AppendText("\nUploading " + directories[i] + " to BMBF");
-                client.UploadFile("http://" + IP + ":50000/host/beatsaber/upload?overwrite", directories[i]);
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+
+                txtbox.AppendText("\n\nUploading " + directories[i] + " to BMBF");
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
+                    client.UploadFile("http://" + IP + ":50000/host/beatsaber/upload?overwrite", directories[i]);
+                }));
+
+                if (i%20 == 0 && i != 0)
+                {
+                    txtbox.AppendText("\n\nSyncing to Beat Saber");
+                    Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
+                    Sync();
+                }
             }
+            Sync();
         }
 
         public void BackupFGet()
@@ -761,7 +882,7 @@ namespace BMBF_BS_Backup_Utility
                 {
                     // Start the process with the info we specified.
                     // Call WaitForExit and then the using statement will close.
-                    using (Process exeProcess = Process.Start(s))
+                    using (Process exeProcess = Process.Start(se))
                     {
                         exeProcess.WaitForExit();
                     }
