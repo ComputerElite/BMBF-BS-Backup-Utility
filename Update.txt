@@ -1,4 +1,4 @@
-https://github.com/ComputerElite/BMBF-BS-Backup-Utility/raw/main/Release.zip
+https://github.com/ComputerElite/BMBF-BS-Backup-Utility/releases/download/1.0/BBBU.V.1.0.zip
 1
 0
 0
