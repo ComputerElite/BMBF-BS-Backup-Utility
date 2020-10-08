@@ -31,7 +31,7 @@ namespace BMBF_BS_Backup_Utility
 
         int MajorV = 1;
         int MinorV = 0;
-        int PatchV = 0;
+        int PatchV = 1;
         Boolean Preview = false;
 
         String IP = "";
@@ -84,12 +84,28 @@ namespace BMBF_BS_Backup_Utility
         {
             if(running)
             {
+                running = false;
                 return;
             }
             running = true;
 
+            //Check Quest IP
+            Boolean good = CheckIP();
+            if (!good)
+            {
+                txtbox.AppendText("\n\nChoose a valid IP!");
+                running = false;
+                return;
+            }
+
             //Create all Backup Folders
-            BackupFSet();
+            Boolean good2 = BackupFSet();
+            if (!good2)
+            {
+                txtbox.AppendText("\n\nThis Backup already exists!");
+                running = false;
+                return;
+            }
 
             //Scores
             txtbox.AppendText("\n\nBacking up scores");
@@ -143,6 +159,7 @@ namespace BMBF_BS_Backup_Utility
             if (Backups.SelectedIndex == 0)
             {
                 txtbox.AppendText("\n\nSelect a valid Backup!");
+                running = false;
                 return;
             }
 
@@ -154,6 +171,7 @@ namespace BMBF_BS_Backup_Utility
             if(!good)
             {
                 txtbox.AppendText("\n\nChoose a valid IP!");
+                running = false;
                 return;
             }
 
@@ -224,12 +242,13 @@ namespace BMBF_BS_Backup_Utility
             {
                 return false;
             }
-            IP.Replace(":50000", "");
-            IP.Replace(":5000", "");
-            IP.Replace(":500", "");
-            IP.Replace(":500", "");
-            IP.Replace(":50", "");
-            IP.Replace(":5", "");
+            IP = IP.Replace("50000", "");
+            IP = IP.Replace("5000", "");
+            IP = IP.Replace("500", "");
+            IP = IP.Replace("500", "");
+            IP = IP.Replace(":50", "");
+            IP = IP.Replace(":5", "");
+
             int count = 0;
             for(int i = 0; i < IP.Length; i++)
             {
@@ -240,8 +259,14 @@ namespace BMBF_BS_Backup_Utility
             }
             if(count != 3)
             {
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
+                    Quest.Text = IP;
+                }));
                 return false;
             }
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
+                Quest.Text = IP;
+            }));
             return true;
         }
 
@@ -784,7 +809,7 @@ namespace BMBF_BS_Backup_Utility
             return Name;
         }
 
-        public void BackupFSet()
+        public Boolean BackupFSet()
         {
             BName.Text = BName.Text.Replace("/", "");
             BName.Text = BName.Text.Replace(":", "");
@@ -804,6 +829,12 @@ namespace BMBF_BS_Backup_Utility
             }
 
             BackupF = exe + "\\Backups\\" + BName.Text;
+
+            if(Directory.Exists(BackupF))
+            {
+                return false;
+            }
+
             Songs = BackupF + "\\Songs";
             Mods = BackupF + "\\Mods";
             Scores = BackupF + "\\Scores";
@@ -825,6 +856,7 @@ namespace BMBF_BS_Backup_Utility
             {
                 Directory.CreateDirectory(Playlists);
             }
+            return true;
         }
 
         public void getBackups()
