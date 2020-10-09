@@ -31,7 +31,7 @@ namespace BMBF_BS_Backup_Utility
 
         int MajorV = 1;
         int MinorV = 0;
-        int PatchV = 1;
+        int PatchV = 2;
         Boolean Preview = false;
 
         String IP = "";
@@ -242,10 +242,12 @@ namespace BMBF_BS_Backup_Utility
             {
                 return false;
             }
-            IP = IP.Replace("50000", "");
-            IP = IP.Replace("5000", "");
-            IP = IP.Replace("500", "");
-            IP = IP.Replace("500", "");
+            IP = IP.Replace(":5000000", "");
+            IP = IP.Replace(":500000", "");
+            IP = IP.Replace(":50000", "");
+            IP = IP.Replace(":5000", "");
+            IP = IP.Replace(":500", "");
+            IP = IP.Replace(":500", "");
             IP = IP.Replace(":50", "");
             IP = IP.Replace(":5", "");
 
@@ -341,6 +343,7 @@ namespace BMBF_BS_Backup_Utility
                 o.Property("SyncConfig").Remove();
                 o.Property("IsCommitted").Remove();
                 o.Property("BeatSaberVersion").Remove();
+                
 
                 JProperty lrs = o.Property("Config");
                 o.Add(lrs.Value.Children<JProperty>());
@@ -357,10 +360,9 @@ namespace BMBF_BS_Backup_Utility
             }
             catch
             {
-                txtbox.AppendText("\n\n\nAn error occured. Check following:");
+                txtbox.AppendText("\n\n\nAn error occured (Code: BMBF100). Couldn't access BMBF Check following:");
                 txtbox.AppendText("\n\n- Your Quest is on and BMBF opened");
                 txtbox.AppendText("\n\n- You put in the Quests IP right.");
-                txtbox.AppendText("\n\n- You've choosen the right Source path");
             }
         }
 
@@ -403,6 +405,7 @@ namespace BMBF_BS_Backup_Utility
                     txtbox.AppendText("\n\nSyncing to Beat Saber");
                     Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate { }));
                     Sync();
+                    System.Threading.Thread.Sleep(2000);
                 }
             }
             Sync();
@@ -571,9 +574,8 @@ namespace BMBF_BS_Backup_Utility
             }
             catch
             {
-                txtbox.AppendText("\n\n\nAn error occured. Check following:");
+                txtbox.AppendText("\n\n\nAn error occured (Code: BMBF100). Couldn't access BMBF. Check following:");
                 txtbox.AppendText("\n\n- You put in the Quests IP right.");
-                txtbox.AppendText("\n\n- You've choosen a Backup Name.");
                 txtbox.AppendText("\n\n- Your Quest is on.");
 
             }
@@ -779,7 +781,14 @@ namespace BMBF_BS_Backup_Utility
 
             txtbox.AppendText("\n");
             txtbox.AppendText("\n");
-            txtbox.AppendText("\nFinished! Backed up " + exported + " Songs");
+            
+            if(exported == 0)
+            {
+                txtbox.AppendText("\nerror (Code: QSE110). ");
+            } else
+            {
+                txtbox.AppendText("\nFinished! Backed up " + exported + " Songs.");
+            }
             txtbox.ScrollToEnd();
         }
 
@@ -922,7 +931,7 @@ namespace BMBF_BS_Backup_Utility
                 catch
                 {
                     // Log error.
-                    txtbox.AppendText("\n\n\nAn Error Occured. Check following");
+                    txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
                     txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
                     txtbox.AppendText("\n\n- You have adb installed.");
                 }
@@ -940,7 +949,15 @@ namespace BMBF_BS_Backup_Utility
                 //Download Update.txt
                 using (WebClient client = new WebClient())
                 {
-                    client.DownloadFile("https://raw.githubusercontent.com/ComputerElite/BMBF-BS-Backup-Utility/main/Update.txt", exe + "\\tmp\\Update.txt");
+                    try
+                    {
+                        client.DownloadFile("https://raw.githubusercontent.com/ComputerElite/BMBF-BS-Backup-Utility/main/Update.txt", exe + "\\tmp\\Update.txt");
+                    }
+                    catch
+                    {
+                        txtbox.AppendText("\n\n\nAn error Occured (Code: UD100). Couldn't check for Updates. Check following");
+                        txtbox.AppendText("\n\n- Your PC has internet.");
+                    }
                 }
                 StreamReader VReader = new StreamReader(exe + "\\tmp\\Update.txt");
 
@@ -1030,7 +1047,7 @@ namespace BMBF_BS_Backup_Utility
             catch
             {
                 // Log error.
-                txtbox.AppendText("\nAn Error Occured");
+                txtbox.AppendText("\n\n\nAn error Occured (Code: UD200). Couldn't download Update.");
             }
         }
 
