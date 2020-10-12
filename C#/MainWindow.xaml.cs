@@ -31,7 +31,7 @@ namespace BMBF_BS_Backup_Utility
 
         int MajorV = 1;
         int MinorV = 1;
-        int PatchV = 0;
+        int PatchV = 1;
         Boolean Preview = false;
 
         String IP = "";
@@ -277,7 +277,7 @@ namespace BMBF_BS_Backup_Utility
         public Boolean CheckIP()
         {
             getQuestIP();
-            if(IP == "Quest IP")
+            if (IP == "Quest IP")
             {
                 return false;
             }
@@ -286,19 +286,24 @@ namespace BMBF_BS_Backup_Utility
             IP = IP.Replace(":50000", "");
             IP = IP.Replace(":5000", "");
             IP = IP.Replace(":500", "");
-            IP = IP.Replace(":500", "");
             IP = IP.Replace(":50", "");
             IP = IP.Replace(":5", "");
+            IP = IP.Replace(":", "");
+            IP = IP.Replace("/", "");
+            IP = IP.Replace("https", "");
+            IP = IP.Replace("http", "");
+            IP = IP.Replace("Http", "");
+            IP = IP.Replace("Https", "");
 
             int count = 0;
-            for(int i = 0; i < IP.Length; i++)
+            for (int i = 0; i < IP.Length; i++)
             {
-                if(IP.Substring(i, 1) == ".")
+                if (IP.Substring(i, 1) == ".")
                 {
                     count++;
                 }
             }
-            if(count != 3)
+            if (count != 3)
             {
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
                     Quest.Text = IP;
