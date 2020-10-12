@@ -30,8 +30,8 @@ namespace BMBF_BS_Backup_Utility
     {
 
         int MajorV = 1;
-        int MinorV = 0;
-        int PatchV = 2;
+        int MinorV = 1;
+        int PatchV = 0;
         Boolean Preview = false;
 
         String IP = "";
