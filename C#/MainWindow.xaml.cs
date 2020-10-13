@@ -31,7 +31,7 @@ namespace BMBF_BS_Backup_Utility
 
         int MajorV = 1;
         int MinorV = 1;
-        int PatchV = 1;
+        int PatchV = 2;
         Boolean Preview = false;
 
         String IP = "";
@@ -43,8 +43,6 @@ namespace BMBF_BS_Backup_Utility
         String Mods = "";
         String Scores = "";
         String BackupF = "";
-        
-
 
         public MainWindow()
         {
@@ -83,7 +81,8 @@ namespace BMBF_BS_Backup_Utility
 
         public void Backup(object sender, RoutedEventArgs e)
         {
-            if(running)
+            StartBMBF();
+            if (running)
             {
                 running = false;
                 return;
@@ -145,18 +144,20 @@ namespace BMBF_BS_Backup_Utility
 
             ModsB();
 
-            txtbox.AppendText("\n\n\nBMBF and Beat Saber Backup has been made.");
-            txtbox.ScrollToEnd();
-            running = false;
 
             //Mod cfgs
             txtbox.AppendText("\n\nBacking up Mod Configs");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/mod_cfgs \"" + BackupF + "\"");
             txtbox.AppendText("\nBacked up Mod Configs\n");
+
+            txtbox.AppendText("\n\n\nBMBF and Beat Saber Backup has been made.");
+            txtbox.ScrollToEnd();
+            running = false;
         }
 
         public void Restore(object sender, RoutedEventArgs e)
         {
+            StartBMBF();
             if (running)
             {
                 return;
@@ -256,6 +257,14 @@ namespace BMBF_BS_Backup_Utility
             txtbox.AppendText("\n\n\nBMBF and Beat Saber has been restored with the selected components.");
             txtbox.ScrollToEnd();
             running = false;
+        }
+
+        public void StartBMBF()
+        {
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
+            {
+                adb("shell am start -n com.weloveoculus.BMBF/com.weloveoculus.BMBF.MainActivity");
+            }));
         }
 
         public int CheckVer()
