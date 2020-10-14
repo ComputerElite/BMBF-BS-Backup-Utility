@@ -31,7 +31,7 @@ namespace BMBF_BS_Backup_Utility
 
         int MajorV = 1;
         int MinorV = 1;
-        int PatchV = 2;
+        int PatchV = 3;
         Boolean Preview = false;
 
         String IP = "";
@@ -112,6 +112,7 @@ namespace BMBF_BS_Backup_Utility
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat \"" + Scores + "\"");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat \"" + Scores + "\"");
             adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat \"" + Scores + "\"");
+            adb("pull /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat \"" + Scores + "\"");
             txtbox.AppendText("\nBacked up scores\n");
             txtbox.ScrollToEnd();
 
@@ -190,6 +191,7 @@ namespace BMBF_BS_Backup_Utility
                 adb("push \"" + Scores + "\\LocalDailyLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalDailyLeaderboards.dat");
                 adb("push \"" + Scores + "\\LocalLeaderboards.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/LocalLeaderboards.dat");
                 adb("push \"" + Scores + "\\PlayerData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/PlayerData.dat");
+                adb("push \"" + Scores + "\\AvatarData.dat\" /sdcard/Android/data/com.beatgames.beatsaber/files/AvatarData.dat");
                 txtbox.AppendText("\nPushed Scores");
                 txtbox.ScrollToEnd();
             }
