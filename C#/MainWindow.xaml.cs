@@ -31,13 +31,13 @@ namespace BMBF_BS_Backup_Utility
 
         int MajorV = 1;
         int MinorV = 1;
-        int PatchV = 3;
+        int PatchV = 4;
         Boolean Preview = false;
 
         String IP = "";
         Boolean draggable = true;
         Boolean running = false;
-        String exe = System.Reflection.Assembly.GetEntryAssembly().Location;
+        String exe = AppDomain.CurrentDomain.BaseDirectory.Substring(0, AppDomain.CurrentDomain.BaseDirectory.Length - 1);
         String Songs = "";
         String Playlists = "";
         String Mods = "";
@@ -68,6 +68,7 @@ namespace BMBF_BS_Backup_Utility
             }
             getBackups();
             Update();
+            QuestIP();
 
             RSongs.IsChecked = true;
             RPlaylists.IsChecked = true;
@@ -118,8 +119,8 @@ namespace BMBF_BS_Backup_Utility
 
             //Songs
 
-            //QSE(); Isn't used anymore but I keep it in in case I needed it.
-            adb("pull /sdcard/BMBFData/CustomSongs \"" + BackupF + "\"");
+            QSE();
+            //adb("pull /sdcard/BMBFData/CustomSongs \"" + BackupF + "\"");
 
             //Playlists
 
@@ -196,14 +197,6 @@ namespace BMBF_BS_Backup_Utility
                 txtbox.ScrollToEnd();
             }
 
-            //Playlists
-            if ((bool)RPlaylists.IsChecked)
-            {
-                PlaylistsR();
-                PushPNG(Playlists + "\\Playlists");
-                txtbox.ScrollToEnd();
-            }
-
             //Replays
             if ((bool)RReplays.IsChecked)
             {
@@ -239,6 +232,14 @@ namespace BMBF_BS_Backup_Utility
                 txtbox.ScrollToEnd();
             }
 
+            //Playlists
+            if ((bool)RPlaylists.IsChecked)
+            {
+                PlaylistsR();
+                PushPNG(Playlists + "\\Playlists");
+                txtbox.ScrollToEnd();
+            }
+
             //Mods
             if ((bool)RMods.IsChecked)
             {
@@ -259,6 +260,94 @@ namespace BMBF_BS_Backup_Utility
             txtbox.AppendText("\n\n\nBMBF and Beat Saber has been restored with the selected components.");
             txtbox.ScrollToEnd();
             running = false;
+        }
+
+        public String adbS(String Argument)
+        {
+            String User = System.Environment.GetEnvironmentVariable("USERPROFILE");
+            ProcessStartInfo s = new ProcessStartInfo();
+            s.CreateNoWindow = false;
+            s.UseShellExecute = false;
+            s.FileName = "adb.exe";
+            s.WindowStyle = ProcessWindowStyle.Minimized;
+            s.RedirectStandardOutput = true;
+            s.Arguments = Argument;
+            try
+            {
+                // Start the process with the info we specified.
+                // Call WaitForExit and then the using statement will close.
+                using (Process exeProcess = Process.Start(s))
+                {
+                    String IPS = exeProcess.StandardOutput.ReadToEnd();
+                    exeProcess.WaitForExit();
+                    return IPS;
+                }
+            }
+            catch
+            {
+
+                ProcessStartInfo se = new ProcessStartInfo();
+                se.CreateNoWindow = false;
+                se.UseShellExecute = false;
+                se.FileName = User + "\\AppData\\Roaming\\SideQuest\\platform-tools\\adb.exe";
+                se.WindowStyle = ProcessWindowStyle.Minimized;
+                se.RedirectStandardOutput = true;
+                se.Arguments = Argument;
+                try
+                {
+                    // Start the process with the info we specified.
+                    // Call WaitForExit and then the using statement will close.
+                    using (Process exeProcess = Process.Start(se))
+                    {
+                        String IPS = exeProcess.StandardOutput.ReadToEnd();
+                        exeProcess.WaitForExit();
+                        return IPS;
+
+                    }
+                }
+                catch
+                {
+                    // Log error.
+                    txtbox.AppendText("\n\n\nAn error Occured (Code: ADB100). Check following");
+                    txtbox.AppendText("\n\n- Your Quest is connected and USB Debugging enabled.");
+                    txtbox.AppendText("\n\n- You have adb installed.");
+                }
+            }
+            return "";
+        }
+
+        public void QuestIP()
+        {
+            String IPS = adbS("shell ifconfig wlan0");
+            int Index = IPS.IndexOf("inet addr:");
+            Boolean space = false;
+            String FIP = "";
+            for (int i = 0; i < IPS.Length; i++)
+            {
+                if (i > (Index + 9) && i < (Index + 9 + 16))
+                {
+                    if (IPS.Substring(i, 1) == " ")
+                    {
+                        space = true;
+                    }
+                    if (!space)
+                    {
+                        FIP = FIP + IPS.Substring(i, 1);
+                    }
+                }
+            }
+
+            if (FIP == "")
+            {
+                return;
+            }
+            IP = FIP;
+            Quest.Text = FIP;
+            if (IP == "")
+            {
+                Quest.Text = "Quest IP";
+            }
+
         }
 
         public void StartBMBF()
@@ -637,13 +726,11 @@ namespace BMBF_BS_Backup_Utility
             getBackups();
         }
 
-        /* Isn't used anymore
         public void QSE()
         {
             ArrayList list = new ArrayList();
             ArrayList content = new ArrayList();
             ArrayList over = new ArrayList();
-            int overwritten = 0;
             int exported = 0;
             String Name = "";
             String Source = "";
@@ -767,7 +854,6 @@ namespace BMBF_BS_Backup_Utility
             }
             txtbox.ScrollToEnd();
         }
-        */
 
         public static void zip(String src, String Output)
         {
