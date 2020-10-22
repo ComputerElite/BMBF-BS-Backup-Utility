@@ -31,7 +31,7 @@ namespace BMBF_BS_Backup_Utility
 
         int MajorV = 1;
         int MinorV = 1;
-        int PatchV = 4;
+        int PatchV = 5;
         Boolean Preview = false;
 
         String IP = "";
@@ -48,7 +48,6 @@ namespace BMBF_BS_Backup_Utility
         {
             InitializeComponent();
             UpdateB.Visibility = Visibility.Hidden;
-            exe = exe.Replace("\\BMBF BS Backup Utility.exe", "");
             
             BackupF = exe + "\\Backups";
 
@@ -541,7 +540,17 @@ namespace BMBF_BS_Backup_Utility
 
                 txtbox.AppendText("\n\nUploading " + directories[i] + " to BMBF");
                 Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate {
-                    client.UploadFile("http://" + IP + ":50000/host/beatsaber/upload?overwrite", directories[i]);
+                    try
+                    {
+                        client.UploadFile("http://" + IP + ":50000/host/beatsaber/upload?overwrite", directories[i]);
+                        return;
+                    }
+                    catch
+                    {
+                        txtbox.AppendText("\n\n\nAn error occured (Code: BMBF100). Couldn't access BMBF. Check following:");
+                        txtbox.AppendText("\n\n- You put in the Quests IP right.");
+                        txtbox.AppendText("\n\n- Your Quest is on and BMBF is opened.");
+                    }
                 }));
 
                 if (i%20 == 0 && i != 0)
@@ -720,7 +729,7 @@ namespace BMBF_BS_Backup_Utility
             {
                 txtbox.AppendText("\n\n\nAn error occured (Code: BMBF100). Couldn't access BMBF. Check following:");
                 txtbox.AppendText("\n\n- You put in the Quests IP right.");
-                txtbox.AppendText("\n\n- Your Quest is on.");
+                txtbox.AppendText("\n\n- Your Quest is on and BMBF opened.");
 
             }
             getBackups();
