@@ -1,3 +1,4 @@
+# THIS TOOL DOES NOT RECIEVE UPDATES ATM PLEASE USE [BMBF MANAGER](https://github.com/ComputerElite/BM) instead
 # BMBF BS Backup Utility (BBBU)
 Make a full BMBF and Beat Saber Backup. It Backes up Scores, Songs, Mods, Mod Configs, Replays, QuestSounds, Playlists and Playlist Covers.
 # How-To ([adb](https://developer.android.com/studio/releases/platform-tools) or [SideQuest](https://sidequestvr.com/setup-howto) required)
